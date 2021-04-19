@@ -1,53 +1,39 @@
 <template>
-  <md-app id="app">
-    <md-app-toolbar class="md-primary">
-      <md-button class="md-icon-button" @click="toggleMenu">
-        <span class="mdi mdi-menu" />
-      </md-button>
-      <span class="md-title">CubeForm</span>
-    </md-app-toolbar>
+  <div class="app-container">
 
-    <md-app-drawer
-        :md-active.sync="menuVisible"
-        md-swipeable
-        id="main-drawer" >
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span>Navigation</span>
+    <div class="app-menu-toggle-button" :class="menuVisible?'app-menu-show':''" v-on:click="toggleMenu">
+      <span class="mdi mdi-menu" />
+    </div>
 
-        <div class="md-toolbar-section-end">
-          <md-button class="md-icon-button md-dense" @click="toggleMenu">
-            <span class="mdi mdi-backburger" />
-          </md-button>
-        </div>
-      </md-toolbar>
+    <ElHeader class="app-menu" :class="menuVisible?'app-menu-show':''">
+      <img class="app-menu-item" src="@/assets/cubeform-logo-vertical.svg" alt="logo">
 
+      <MenuList class="app-menu-item" icon="mdi-account" title="Profile">
+        <IconButton icon="mdi-palette-swatch" text="Skin customization" />
+        <IconButton icon="mdi-laptop" text="Server profiles" />
+        <IconButton icon="mdi-server" text="My servers" />
+        <IconButton icon="mdi-account-cog" text="Account settings" />
+      </MenuList>
 
+      <MenuList class="app-menu-item" icon="mdi-controller-classic" title="Game">
+        <IconButton icon="mdi-new-box" text="News" />
+        <IconButton icon="mdi-text-box" text="Last update" />
+        <IconButton icon="mdi-server-network" text="Server list" />
+        <IconButton icon="mdi-star" text="Buy premium" />
+      </MenuList>
 
-      <md-list class="drawer-list" @click="hideMenu">
-        <LinkListItem to="/" icon="mdi-inbox" text="Yeee" />
-        <LinkListItem to="/test" icon="mdi-test-tube" text="Test" />
-<!--        <router-link to="/test" @click="hideMenu">-->
-<!--          <md-list-item>-->
-<!--            <span class="mdi mdi-inbox" />-->
-<!--            <span class="md-list-item-text">Inbox</span>-->
-<!--          </md-list-item>-->
-<!--        </router-link>-->
-
-      </md-list>
-    </md-app-drawer>
-
-    <md-app-content id="app-main">
-      <router-view></router-view>
-    </md-app-content>
-  </md-app>
+    </ElHeader>
+    <router-view class="app-content"></router-view>
+  </div>
 
 </template>
 
 <script>
-import LinkListItem from "@/components/LinkListItem";
-
+import MenuList from "@/components/MenuList";
+import IconButton from "@/components/Elements/Components/IconButton";
 export default {
   name: 'App',
+  components: {IconButton, MenuList},
   data: () => ({
     menuVisible: false
   }),
@@ -64,33 +50,92 @@ export default {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
     }
   },
-  components: {
-    LinkListItem
-  }
 }
 </script>
 
-<style lang="less">
-#app {
-  font-family: 'Ubuntu', 'Roboto', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  height: 100vh;
-  color: white;
+<style lang="less" scoped>
+@import "theme.less";
 
-  a .md-disabled {
-    color: white;
+@menu-min-width: 15.62em;
+
+.app-container {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  min-height: 100vh;
+}
+
+.app-menu {
+  padding-top: 2em;
+  grid-column: 1 / 2;
+  background-color: @theme-primary-dark;
+  color: @theme-primary-foreground;
+  max-width: @menu-min-width;
+
+  .app-menu-item {
+    width: 80%;
   }
 }
 
-#main-drawer {
-  max-width: 20em;
+.app-content {
+  grid-column: 2 / 3;
 }
-#main-drawer .drawer-list .mdi {
-  margin-right: 0.5em;
+.app-menu-toggle-button {
+  background-color: @theme-primary-dark;
+  color: @theme-primary-foreground;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  font-size: 2em;
+  padding: 0.1em;
+  border-radius: 0 0 0.5em 0;
+}
+@media screen and (max-width: 950px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+  .app-content {
+    grid-column: 1 / 2;
+  }
+  .app-menu-toggle-button {
+    display: block;
+    transition: transform 0.5s;
+
+    &.app-menu-show {
+      transform: translateX(@menu-min-width * 0.5);
+    }
+  }
+  .app-menu {
+    transition: transform 0.5s;
+    grid-column: unset;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: @menu-min-width;
+    bottom: 0;
+    transform: translateX(-100%);
+
+    &.app-menu-show {
+      transform: translateX(0);
+    }
+  }
 }
 
+</style>
 
+<style lang="less">
+@import "theme";
 
+.app-container {
+  font-family: @font-family-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  background-color: @theme-primary-light;
+  color: @theme-primary-foreground;
+}
+
+.menu-list {
+  margin-top: 2em;
+}
 </style>
