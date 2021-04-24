@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -35,21 +36,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/public/**", REGISTER_PAGE_PATH, LOGIN_PAGE_PATH, LOGIN_FAILED_PAGE_PATH, LOGOUT_DONE_PAGE_PATH
     };
 
-    public static class NoPasswordEncoder implements PasswordEncoder {
-
-        @Override
-        public String encode(CharSequence rawPassword) {
-            logger.info("encode '{}' to '{}'", rawPassword, rawPassword.toString());
-            return rawPassword.toString();
-        }
-
-        @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            logger.info("matches '{}' '{}' ? {}", rawPassword, encodedPassword, rawPassword.toString().equals(encodedPassword));
-            return rawPassword.toString().equals(encodedPassword);
-        }
-    }
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -63,7 +49,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new NoPasswordEncoder();//new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
