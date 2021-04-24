@@ -2,15 +2,15 @@ package pl.platrykp.cubeformservice.requests;
 
 public class RegisterRequest {
 
-    public String login;
+    public String username;
     public String password;
     public String email;
 
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String login, String password, String email) {
-        this.login = login;
+    public RegisterRequest(String username, String password, String email) {
+        this.username = username;
         this.password = password;
         this.email = email;
     }

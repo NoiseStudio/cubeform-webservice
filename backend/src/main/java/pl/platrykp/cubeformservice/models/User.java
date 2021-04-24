@@ -13,7 +13,7 @@ public class User {
     private int id;
 
     @Column
-    private String login;
+    private String username;
 
     @Column
     private String email;
@@ -26,15 +26,15 @@ public class User {
 
     public User(){}
 
-    public User(String login, String email, String password, Timestamp creationDate) {
-        this.login = login;
+    public User(String username, String email, String password, Timestamp creationDate) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.creationDate = creationDate;
     }
 
-    public User(String login, String password, String email) {
-        this.login = login;
+    public User(String username, String email, String password) {
+        this.username = username;
         this.password = password;
         this.email = email;
         this.creationDate = new Timestamp(System.currentTimeMillis());
@@ -48,12 +48,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String login) {
+        this.username = login;
     }
 
     public String getEmail() {

@@ -7,7 +7,7 @@ import pl.platrykp.cubeformservice.resources.WelcomeMessage;
 @RestController
 public class WelcomeMessageController {
 
-    @GetMapping(value = "/welcomeMessage")
+    @GetMapping(value = "/public/welcomeMessage")
     public WelcomeMessage getWelcomeMessage(){
         return new WelcomeMessage();
     }
