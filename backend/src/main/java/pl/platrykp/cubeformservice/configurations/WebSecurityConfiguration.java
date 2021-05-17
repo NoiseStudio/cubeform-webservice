@@ -81,9 +81,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                    .ignoringAntMatchers(CSRF_IGNORE)
-                .and()
+                .csrf().disable()
+                    //.ignoringAntMatchers(CSRF_IGNORE)
+                //.and()
                     .authorizeRequests()
                     .antMatchers(NO_AUTH_PERMIT).permitAll()
                     .anyRequest().authenticated()
