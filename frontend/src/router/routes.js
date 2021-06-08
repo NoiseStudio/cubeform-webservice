@@ -1,5 +1,9 @@
 import HelloWorld from "@/components/HelloWorld";
 import Test from "@/components/Test";
+import Servers from "@/components/Servers";
+import ServerRegistrationForm from "@/components/ServerRegistrationForm";
+
+
 
 export default [
     {
@@ -9,5 +13,13 @@ export default [
     {
         path: '/test',
         component: Test,
+    },
+    {
+        path: "/servers",
+        component: Servers
+    },
+    {
+        path: "/registerServer",
+        component: ServerRegistrationForm
     }
 ];
