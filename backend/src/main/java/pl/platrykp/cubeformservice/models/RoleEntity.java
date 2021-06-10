@@ -15,11 +15,10 @@ import java.util.UUID;
 public class RoleEntity {
 
     @Id
-    @GeneratedValue(generator = "hibernate-uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     @Getter @Setter
-    private UUID id;
+    private int id;
 
     @Column
     @Getter @Setter
