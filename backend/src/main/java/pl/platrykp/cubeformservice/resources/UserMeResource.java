@@ -4,6 +4,7 @@ import net.minidev.json.annotate.JsonIgnore;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class UserMeResource {
 
@@ -14,7 +15,7 @@ public class UserMeResource {
         this.user = user;
     }
 
-    public int getId() {
+    public UUID getId() {
         return user.getId();
     }
 

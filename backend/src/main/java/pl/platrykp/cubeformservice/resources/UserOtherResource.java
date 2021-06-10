@@ -1,24 +1,24 @@
 package pl.platrykp.cubeformservice.resources;
 
 import net.minidev.json.annotate.JsonIgnore;
-import pl.platrykp.cubeformservice.models.User;
+import pl.platrykp.cubeformservice.models.UserEntity;
 
 import java.sql.Timestamp;
 
 public class UserOtherResource {
 
     @JsonIgnore
-    private User user;
+    private final UserEntity userEntity;
 
-    public UserOtherResource(User user){
-        this.user = user;
+    public UserOtherResource(UserEntity userEntity){
+        this.userEntity = userEntity;
     }
 
     public String getUsername() {
-        return user.getUsername();
+        return userEntity.getUsername();
     }
 
     public Timestamp getCreationDate() {
-        return user.getCreationDate();
+        return userEntity.getCreationDate();
     }
 }

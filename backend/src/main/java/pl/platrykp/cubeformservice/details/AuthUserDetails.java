@@ -2,17 +2,18 @@ package pl.platrykp.cubeformservice.details;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.platrykp.cubeformservice.models.User;
+import pl.platrykp.cubeformservice.models.UserEntity;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.UUID;
 
 public class AuthUserDetails implements UserDetails {
 
-    private User user;
+    private UserEntity userEntity;
 
-    public AuthUserDetails(User user) {
-        this.user = user;
+    public AuthUserDetails(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     @Override
@@ -22,12 +23,12 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userEntity.getUsername();
     }
 
     @Override
@@ -50,15 +51,15 @@ public class AuthUserDetails implements UserDetails {
         return true;
     }
 
-    public int getId() {
-        return user.getId();
+    public UUID getId() {
+        return userEntity.getId();
     }
 
     public String getEmail() {
-        return user.getEmail();
+        return userEntity.getEmail();
     }
 
     public Timestamp getCreationDate() {
-        return user.getCreationDate();
+        return userEntity.getCreationDate();
     }
 }

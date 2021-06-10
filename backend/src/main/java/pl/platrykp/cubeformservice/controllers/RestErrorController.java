@@ -1,7 +1,5 @@
 package pl.platrykp.cubeformservice.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +22,7 @@ public class RestErrorController implements ErrorController {
         String message = throwable != null ? throwable.getMessage() : HttpStatus.resolve(errorCode).toString();
         String path = (String) request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
         String method = request.getMethod();
+
         return new HttpCodeResponse(errorCode, message, method, path);
     }
 

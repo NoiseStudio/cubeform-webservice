@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
-import pl.platrykp.cubeformservice.models.User;
+import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
 import pl.platrykp.cubeformservice.resources.UserMeResource;
 import pl.platrykp.cubeformservice.resources.UserOtherResource;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -30,8 +31,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public UserOtherResource getUser(@PathVariable int id){
-        Optional<User> user = userRepository.findById(id);
+    public UserOtherResource getUser(@PathVariable UUID id){
+        Optional<UserEntity> user = userRepository.findById(id);
         if(user.isPresent())
             return new UserOtherResource(user.get());
 

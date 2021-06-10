@@ -1,25 +1,23 @@
 package pl.platrykp.cubeformservice.requests;
 
-import pl.platrykp.cubeformservice.models.News;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import pl.platrykp.cubeformservice.models.NewsEntity;
 
 import java.sql.Timestamp;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewNewsRequest {
 
-    public String title;
-    public String content;
-    public long date;
+    private String title;
+    private String content;
+    private long date;
 
-    public NewNewsRequest(){}
-
-    public NewNewsRequest(String title, String content, long date) {
-        this.title = title;
-        this.content = content;
-        this.date = date;
-    }
-
-    public News newsEntity(){
-        return new News(title, content, new Timestamp(date));
+    public NewsEntity newsEntity(){
+        return new NewsEntity(title, content, new Timestamp(date));
     }
 }

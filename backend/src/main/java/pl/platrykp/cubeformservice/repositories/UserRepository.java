@@ -1,18 +1,18 @@
 package pl.platrykp.cubeformservice.repositories;
 
 import org.springframework.data.repository.CrudRepository;
-import pl.platrykp.cubeformservice.models.User;
+import pl.platrykp.cubeformservice.models.UserEntity;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface UserRepository extends CrudRepository<UserEntity, UUID> {
 
-    Optional<User> findById(int id);
-    Optional<User> findByUsername(String username);
-    Optional<User> findByEmail(String email);
+    Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByEmail(String email);
 
-    Optional<User> findByUsernameOrEmail(String username, String email);
+    Optional<UserEntity> findByUsernameOrEmail(String username, String email);
 }
 
 

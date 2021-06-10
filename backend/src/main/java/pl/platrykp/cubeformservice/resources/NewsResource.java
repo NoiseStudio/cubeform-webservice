@@ -1,31 +1,33 @@
 package pl.platrykp.cubeformservice.resources;
 
 import net.minidev.json.annotate.JsonIgnore;
-import pl.platrykp.cubeformservice.models.News;
+import pl.platrykp.cubeformservice.models.NewsEntity;
+
+import java.util.UUID;
 
 public class NewsResource {
 
     @JsonIgnore
-    private final News news;
+    private final NewsEntity newsEntity;
 
-    public NewsResource(News data){
-        this.news = data;
+    public NewsResource(NewsEntity data){
+        this.newsEntity = data;
     }
 
 
-    public int getId() {
-        return news.getId();
+    public UUID getId() {
+        return newsEntity.getId();
     }
 
     public String getTitle() {
-        return news.getTitle();
+        return newsEntity.getTitle();
     }
 
     public String getContent() {
-        return news.getContent();
+        return newsEntity.getContent();
     }
 
     public long getDate() {
-        return news.getDate().getTime();
+        return newsEntity.getDate().getTime();
     }
 }

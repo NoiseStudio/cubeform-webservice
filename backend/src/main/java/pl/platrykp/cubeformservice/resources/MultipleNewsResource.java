@@ -1,15 +1,14 @@
 package pl.platrykp.cubeformservice.resources;
 
-import pl.platrykp.cubeformservice.models.News;
 import pl.platrykp.cubeformservice.models.NewsEntity;
 
 import java.util.List;
 
 public class MultipleNewsResource {
 
-    public List<News> news;
+    public List<NewsEntity> newsEntities;
 
-    public MultipleNewsResource(List<News> newsList){
-        news = newsList;
+    public MultipleNewsResource(List<NewsEntity> newsEntityList){
+        newsEntities = newsEntityList;
     }
 }

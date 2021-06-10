@@ -1,12 +1,20 @@
 package pl.platrykp.cubeformservice.responseentities;
 
+
+import lombok.Data;
+
+@Data
 public class HttpCodeResponse {
 
-    public long time;
-    public int code;
-    public String message;
-    public String method;
-    public String path;
+    private long time;
+    private int code;
+    private String message;
+    private String method;
+    private String path;
+
+
+    public HttpCodeResponse() {
+    }
 
     public HttpCodeResponse(int code, String message, String method, String path) {
         this.time = System.currentTimeMillis();

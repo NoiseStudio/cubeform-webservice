@@ -6,7 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.platrykp.cubeformservice.configurations.WebSecurityConfiguration;
-import pl.platrykp.cubeformservice.models.User;
+import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
 import pl.platrykp.cubeformservice.requests.RegisterRequest;
 import pl.platrykp.cubeformservice.responseentities.ErrorResponse;
@@ -30,7 +30,7 @@ public class AuthController {
             HttpServletResponse response,
             @RequestBody RegisterRequest registerRequest){
 
-        Optional<User> inDatabase = userRepository.findByUsernameOrEmail(registerRequest.username, registerRequest.email);
+        Optional<UserEntity> inDatabase = userRepository.findByUsernameOrEmail(registerRequest.username, registerRequest.email);
         if (inDatabase.isPresent()) {
             logger.info("Failed attempt to create user: username or email already taken");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -42,12 +42,12 @@ public class AuthController {
 
         String hashedPassword = passwordEncoder.encode(registerRequest.password);
 
-        User newUser = new User(
+        UserEntity newUserEntity = new UserEntity(
                 registerRequest.username,
                 registerRequest.email,
                 hashedPassword);
 
-        userRepository.save(newUser);
+        userRepository.save(newUserEntity);
         logger.info("New user created");
         return null;
     }

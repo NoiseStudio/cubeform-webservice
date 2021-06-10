@@ -1,9 +1,13 @@
 package pl.platrykp.cubeformservice.responseentities;
 
-public class ErrorResponse {
-    public String error;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ErrorResponse {
+    private String error;
+
 }

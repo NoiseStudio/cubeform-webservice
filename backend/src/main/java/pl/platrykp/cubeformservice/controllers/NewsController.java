@@ -2,11 +2,9 @@ package pl.platrykp.cubeformservice.controllers;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.platrykp.cubeformservice.models.News;
 import pl.platrykp.cubeformservice.models.NewsEntity;
 import pl.platrykp.cubeformservice.repositories.NewsRepository;
 import pl.platrykp.cubeformservice.requests.NewNewsRequest;
@@ -15,6 +13,7 @@ import pl.platrykp.cubeformservice.resources.NewsResource;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class NewsController {
@@ -23,8 +22,8 @@ public class NewsController {
     private NewsRepository newsRepository;
 
     @GetMapping("/news/{id}")
-    public NewsResource getNews(@PathVariable int id) throws NotFoundException {
-        Optional<News> news = newsRepository.findById(id);
+    public NewsResource getNews(@PathVariable UUID id) throws NotFoundException {
+        Optional<NewsEntity> news = newsRepository.findById(id);
         if(news.isPresent())
             return new NewsResource(news.get());
 
@@ -33,17 +32,17 @@ public class NewsController {
 
     @GetMapping("/news")
     public MultipleNewsResource getNews() {
-        List<News> news = newsRepository.findTop10ByOrderByDate();
+        List<NewsEntity> newsEntities = newsRepository.findTop10ByOrderByDate();
 
-        return new MultipleNewsResource(news);
+        return new MultipleNewsResource(newsEntities);
     }
 
 
     @PostMapping("/news")
     public ResponseEntity<?> newNews(@RequestBody NewNewsRequest newsRequest){
-        News newNewsEntity = newsRequest.newsEntity();
+        NewsEntity newNewsEntityEntity = newsRequest.newsEntity();
 
-        newsRepository.save(newNewsEntity);
+        newsRepository.save(newNewsEntityEntity);
         return ResponseEntity.ok("");
     }
 

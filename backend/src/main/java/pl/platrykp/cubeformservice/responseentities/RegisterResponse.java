@@ -1,10 +1,14 @@
 package pl.platrykp.cubeformservice.responseentities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterResponse {
 
-    public String message;
+    private String message;
 
-    public RegisterResponse(String message) {
-        this.message = message;
-    }
 }
