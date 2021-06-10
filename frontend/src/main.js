@@ -6,6 +6,13 @@ import Store from "@/storage/Store";
 import Elements from "@/components/Elements";
 import './app.less'
 import '@mdi/font/css/materialdesignicons.min.css'
+import {ValidationObserver} from 'vee-validate'
+import {ValidationProvider} from 'vee-validate/dist/vee-validate.full.esm';
+
+Vue.component('ValidationProvider',ValidationProvider)
+Vue.component('ValidationObserver',ValidationObserver)
+
+
 
 Vue.config.productionTip = true;
 
