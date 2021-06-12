@@ -3,9 +3,9 @@ package pl.platrykp.cubeformservice.configurations;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.web.context.request.RequestAttributes;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,13 +22,13 @@ public class AuthAccessDeniedEntryPoint implements AuthenticationEntryPoint {
         JSONObject responseJson = new JSONObject();
         String path = (String) request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
         responseJson.put("time", System.currentTimeMillis());
-        responseJson.put("status", 403);
-        responseJson.put("message", "Auth access denied: " + authException.getMessage());
+        responseJson.put("status", HttpStatus.UNAUTHORIZED.value());
+        responseJson.put("message", authException.getMessage());
         responseJson.put("path", path);
         String jsonStr = responseJson.toJSONString();
         response.setContentType("application/json;charset=UTF-8");
         response.setContentLength(jsonStr.length());
-        response.setStatus(403);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.getWriter().write(jsonStr);
         logger.info("Request denied: AuthenticationException '{}': {}", path, authException.getMessage());
     }

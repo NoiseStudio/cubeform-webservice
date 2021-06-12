@@ -1,7 +1,6 @@
 package pl.platrykp.cubeformservice.resources;
 
 import net.minidev.json.annotate.JsonIgnore;
-import pl.platrykp.cubeformservice.details.AuthUserDetails;
 import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
 

@@ -1,6 +1,7 @@
 package pl.platrykp.cubeformservice.details;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
@@ -8,19 +9,24 @@ import pl.platrykp.cubeformservice.util.Role;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
-public class AuthUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final UserEntity userEntity;
+    private final Collection<SimpleGrantedAuthority> authorities;
 
-    public AuthUserDetails(UserEntity userEntity) {
+    public UserDetailsImpl(UserEntity userEntity) {
         this.userEntity = userEntity;
+        authorities = Collections.singletonList(
+                new SimpleGrantedAuthority(userEntity.getRole().getName())
+        );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override

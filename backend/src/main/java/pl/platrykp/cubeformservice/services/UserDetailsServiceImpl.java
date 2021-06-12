@@ -5,14 +5,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.details.UserDetailsImpl;
 import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
 
 import java.util.Optional;
 
 @Service
-public class AuthUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -21,7 +21,7 @@ public class AuthUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepository.findByUsername(username);
         if(user.isPresent())
-            return new AuthUserDetails(user.get());
+            return new UserDetailsImpl(user.get());
 
         throw new UsernameNotFoundException("User not found");
     }

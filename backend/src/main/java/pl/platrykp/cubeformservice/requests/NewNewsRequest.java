@@ -3,7 +3,6 @@ package pl.platrykp.cubeformservice.requests;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import pl.platrykp.cubeformservice.models.NewsEntity;
 
 import java.sql.Timestamp;

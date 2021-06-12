@@ -2,8 +2,6 @@ package pl.platrykp.cubeformservice.configurations;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.postgresql.PGConnection;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +11,7 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 @Configuration
 public class DatabaseConfiguration {

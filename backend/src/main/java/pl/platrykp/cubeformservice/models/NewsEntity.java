@@ -8,7 +8,6 @@ import pl.platrykp.cubeformservice.requests.NewNewsRequest;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity

@@ -1,12 +1,12 @@
 package pl.platrykp.cubeformservice.configurations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,17 +16,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import pl.platrykp.cubeformservice.filters.JwtTokenFilter;
 import pl.platrykp.cubeformservice.filters.OriginFilter;
-import pl.platrykp.cubeformservice.services.AuthUserDetailsService;
+import pl.platrykp.cubeformservice.services.UserDetailsServiceImpl;
 
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfiguration.class);
     public static final String LOGIN_PAGE_PATH = "/api/auth/login";
     public static final String REGISTER_PAGE_PATH = "/api/auth/register";
 
@@ -47,7 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return new AuthUserDetailsService();
+        return new UserDetailsServiceImpl();
     }
 
     @Bean
@@ -85,6 +84,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers(NO_AUTH_PERMIT).permitAll()
                     .anyRequest().authenticated()
                 .and()

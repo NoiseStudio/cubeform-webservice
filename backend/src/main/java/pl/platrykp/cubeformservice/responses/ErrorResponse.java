@@ -1,4 +1,4 @@
-package pl.platrykp.cubeformservice.responseentities;
+package pl.platrykp.cubeformservice.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterResponse {
-
-    private String message;
+public class ErrorResponse {
+    private String error;
 
 }

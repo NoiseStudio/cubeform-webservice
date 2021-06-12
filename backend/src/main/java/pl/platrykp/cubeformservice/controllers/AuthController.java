@@ -1,17 +1,19 @@
 package pl.platrykp.cubeformservice.controllers;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.platrykp.cubeformservice.components.JwtTokenUtil;
-import pl.platrykp.cubeformservice.configurations.WebSecurityConfiguration;
-import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.details.UserDetailsImpl;
 import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.RoleRepository;
@@ -19,9 +21,8 @@ import pl.platrykp.cubeformservice.repositories.UserRepository;
 import pl.platrykp.cubeformservice.requests.LoginRequest;
 import pl.platrykp.cubeformservice.requests.RegisterRequest;
 import pl.platrykp.cubeformservice.resources.UserMeResource;
-import pl.platrykp.cubeformservice.responseentities.ErrorResponse;
-import pl.platrykp.cubeformservice.responseentities.HttpCodeResponse;
-import pl.platrykp.cubeformservice.responseentities.LoginSuccessResponse;
+import pl.platrykp.cubeformservice.responses.ErrorResponse;
+import pl.platrykp.cubeformservice.responses.LoginSuccessResponse;
 import pl.platrykp.cubeformservice.util.JsonResponse;
 import pl.platrykp.cubeformservice.util.Role;
 
@@ -92,7 +93,7 @@ public class AuthController {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            AuthUserDetails userDetails = (AuthUserDetails) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             String jwt = jwtTokenUtil.generateToken(userDetails);
 
             return new LoginSuccessResponse(jwt, userDetails.getUsername(), userDetails.getRoleEntity());
@@ -104,9 +105,9 @@ public class AuthController {
 
     @PostMapping("/refreshToken")
     public Object refreshToken(Authentication authentication){
-        AuthUserDetails userDetails = (AuthUserDetails) authentication.getPrincipal();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         if(userDetails == null || !authentication.isAuthenticated())
-            return JsonResponse.forbidden("You are not authorized");
+            return JsonResponse.unauthorized("You are not authorized");
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
 

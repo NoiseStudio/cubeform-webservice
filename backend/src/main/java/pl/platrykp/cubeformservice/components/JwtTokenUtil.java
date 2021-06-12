@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.details.UserDetailsImpl;
 import pl.platrykp.cubeformservice.util.Role;
 
 import java.util.Date;
@@ -17,7 +17,7 @@ public class JwtTokenUtil {
     @Value("${jwt_secret}")
     private String SECRET;
 
-    public String generateToken(AuthUserDetails user) {
+    public String generateToken(UserDetailsImpl user) {
         return doGenerateToken(user.getUsername(), user.getRole().getId());
     }
 

@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.platrykp.cubeformservice.models.NewsEntity;
 import pl.platrykp.cubeformservice.repositories.NewsRepository;
@@ -16,12 +17,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/api/news")
 public class NewsController {
 
     @Autowired
     private NewsRepository newsRepository;
 
-    @GetMapping("/news/{id}")
+    @GetMapping("/{id}")
     public NewsResource getNews(@PathVariable UUID id) throws NotFoundException {
         Optional<NewsEntity> news = newsRepository.findById(id);
         if(news.isPresent())
@@ -30,7 +32,7 @@ public class NewsController {
         throw new ResourceNotFoundException();
     }
 
-    @GetMapping("/news")
+    @GetMapping("/")
     public MultipleNewsResource getNews() {
         List<NewsEntity> newsEntities = newsRepository.findTop10ByOrderByDate();
 
@@ -38,17 +40,13 @@ public class NewsController {
     }
 
 
-    @PostMapping("/news")
+    @PostMapping("/")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> newNews(@RequestBody NewNewsRequest newsRequest){
         NewsEntity newNewsEntityEntity = newsRequest.newsEntity();
 
         newsRepository.save(newNewsEntityEntity);
         return ResponseEntity.ok("");
     }
-
-//    @DeleteMapping("/news/{id}")
-//    public ResponseEntity<?> deleteNews(@PathVariable int id){
-//
-//    }
 
 }

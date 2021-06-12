@@ -1,4 +1,4 @@
-package pl.platrykp.cubeformservice.responseentities;
+package pl.platrykp.cubeformservice.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

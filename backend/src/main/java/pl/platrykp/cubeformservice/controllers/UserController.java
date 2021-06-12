@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.details.UserDetailsImpl;
 import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
 import pl.platrykp.cubeformservice.resources.UserMeResource;
@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/@me")
     public UserMeResource me(Authentication authentication){
-        return new UserMeResource(((AuthUserDetails) authentication.getPrincipal()).getUserEntity());
+        return new UserMeResource(((UserDetailsImpl) authentication.getPrincipal()).getUserEntity());
     }
 
     @GetMapping("/{id}")
