@@ -1,27 +1,21 @@
 package pl.platrykp.cubeformservice.components;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.util.Role;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
-
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     @Value("${jwt_secret}")
     private String SECRET;
-
 
     public String generateToken(AuthUserDetails user) {
         return doGenerateToken(user.getUsername(), user.getRole().getId());
@@ -40,6 +34,22 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    /**
+     * @param token token
+     * @return null if token is incorrect
+     */
+    public @Nullable TokenData parseToken(String token) {
+        try {
+            return new TokenData(Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody());
+        }catch (  ExpiredJwtException
+                | UnsupportedJwtException
+                | MalformedJwtException
+                | SignatureException
+                | IllegalArgumentException er) {
+            return null;
+        }
+    }
+
     public static final class TokenData {
         private final Claims claims;
 
@@ -47,29 +57,21 @@ public class JwtTokenUtil {
             this.claims = claims;
         }
 
-        public String getUsernameFromToken() {
-            return getClaimFromToken(Claims::getSubject);
+        public String getUsername() {
+            return claims.getSubject();
         }
 
-        public Date getExpirationDateFromToken() {
-            return getClaimFromToken(Claims::getExpiration);
+        public Date getExpirationDate() {
+            return claims.getExpiration();
         }
 
-        private Boolean isTokenExpired() {
-            final Date expiration = getExpirationDateFromToken();
+        public Role getRole() {
+            return Role.fromId(claims.get("role", Integer.class));
+        }
+
+        public Boolean isExpired() {
+            final Date expiration = getExpirationDate();
             return expiration.before(new Date());
-        }
-
-
-        public <T> T getClaimFromToken(Function<Claims, T> claimsResolver) {
-            return claimsResolver.apply(claims);
-        }
-
-        public Boolean validateToken(UserDetails userDetails) {
-            final String username = getUsernameFromToken();
-            return (
-                    username.equals(userDetails.getUsername())
-                            && !isTokenExpired());
         }
 
     }

@@ -44,17 +44,19 @@ public class UserEntity {
 
     public UserEntity(){}
 
-    public UserEntity(String username, String email, String password, Timestamp creationDate) {
+    public UserEntity(String username, String email, String password, Timestamp creationDate, RoleEntity role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.creationDate = creationDate;
     }
 
-    public UserEntity(String username, String email, String password) {
+    public UserEntity(String username, String email, String password, RoleEntity role) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 

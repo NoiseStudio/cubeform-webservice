@@ -2,6 +2,7 @@ package pl.platrykp.cubeformservice.details;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.util.Role;
 
@@ -64,5 +65,13 @@ public class AuthUserDetails implements UserDetails {
         return userEntity.getCreationDate();
     }
 
-    public Role getRole(){ return Role.fromRoleEntity(userEntity.getRole()); }
+    public RoleEntity getRoleEntity() {
+        return userEntity.getRole();
+    }
+
+    public Role getRole(){ return Role.fromRoleEntity(getRoleEntity()); }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
 }

@@ -2,6 +2,8 @@ package pl.platrykp.cubeformservice.resources;
 
 import net.minidev.json.annotate.JsonIgnore;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.models.RoleEntity;
+import pl.platrykp.cubeformservice.models.UserEntity;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -9,9 +11,9 @@ import java.util.UUID;
 public class UserMeResource {
 
     @JsonIgnore
-    private final AuthUserDetails user;
+    private final UserEntity user;
 
-    public UserMeResource(AuthUserDetails user){
+    public UserMeResource(UserEntity user){
         this.user = user;
     }
 
@@ -27,11 +29,11 @@ public class UserMeResource {
         return user.getEmail();
     }
 
-    public String getPassword() {
-        return user.getPassword();
-    }
-
     public Timestamp getCreationDate() {
         return user.getCreationDate();
+    }
+
+    private RoleEntity getRole() {
+        return user.getRole();
     }
 }

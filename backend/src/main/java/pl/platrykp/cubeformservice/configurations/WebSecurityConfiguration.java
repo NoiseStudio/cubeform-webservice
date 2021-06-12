@@ -10,11 +10,15 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import pl.platrykp.cubeformservice.filters.JwtTokenFilter;
+import pl.platrykp.cubeformservice.filters.OriginFilter;
 import pl.platrykp.cubeformservice.services.AuthUserDetailsService;
 
 
@@ -23,18 +27,17 @@ import pl.platrykp.cubeformservice.services.AuthUserDetailsService;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfiguration.class);
-    public static final String LOGIN_PAGE_PATH = "/auth/login";
-    public static final String REGISTER_PAGE_PATH = "/auth/users";
-    public static final String LOGIN_FAILED_PAGE_PATH = "/auth/loginFailed";
-    public static final String LOGIN_SUCCESS_PAGE_PATH = "/auth/loginSuccess";
-    public static final String LOGOUT_PAGE_PATH = "/auth/logout";
-    public static final String LOGOUT_DONE_PAGE_PATH = "/auth/logoutDone";
-    public static final String[] CSRF_IGNORE = {
-            REGISTER_PAGE_PATH, LOGIN_PAGE_PATH, LOGIN_FAILED_PAGE_PATH, LOGOUT_DONE_PAGE_PATH, LOGOUT_PAGE_PATH
-    };
+    public static final String LOGIN_PAGE_PATH = "/api/auth/login";
+    public static final String REGISTER_PAGE_PATH = "/api/auth/register";
+
     public static final String[] NO_AUTH_PERMIT = {
-            "/public/**", REGISTER_PAGE_PATH, LOGIN_PAGE_PATH, LOGIN_FAILED_PAGE_PATH, LOGOUT_DONE_PAGE_PATH
+            "/public/**", REGISTER_PAGE_PATH, LOGIN_PAGE_PATH
     };
+
+    @Bean
+    public OriginFilter originFilter(){
+        return new OriginFilter();
+    }
 
     @Bean
     @Override
@@ -65,13 +68,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new AuthAccessDeniedEntryPoint();
     }
 
-
-//    @Bean
-//    public JSonAuthenticationFilter jsonUsernamePasswordAuthFilter() throws Exception {
-//        JSonAuthenticationFilter authFilter = new JSonAuthenticationFilter();
-//        authFilter.setAuthenticationManager(authenticationManagerBean());
-//        return authFilter;
-//    }
+    @Bean
+    public JwtTokenFilter jwtTokenFilter() {
+        return new JwtTokenFilter();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -82,31 +82,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                    //.ignoringAntMatchers(CSRF_IGNORE)
-                //.and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                     .authorizeRequests()
                     .antMatchers(NO_AUTH_PERMIT).permitAll()
                     .anyRequest().authenticated()
-                .and()
-                    .formLogin()
-                    .loginProcessingUrl(LOGIN_PAGE_PATH)
-                    .defaultSuccessUrl(LOGIN_SUCCESS_PAGE_PATH)
-                    .failureUrl(LOGIN_FAILED_PAGE_PATH)
-                    .successForwardUrl(LOGIN_SUCCESS_PAGE_PATH)
-                    .permitAll()
-                .and()
-                    .logout()
-                    .logoutUrl(LOGOUT_PAGE_PATH)
-                    .permitAll()
-                    .deleteCookies("JSESSIONID")
-                    .invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    .logoutSuccessUrl(LOGOUT_DONE_PAGE_PATH)
                 .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint())
 //                .and()
                 ;
+
+        http.addFilterBefore(originFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 }

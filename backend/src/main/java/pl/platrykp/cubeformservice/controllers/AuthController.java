@@ -3,19 +3,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.platrykp.cubeformservice.components.JwtTokenUtil;
 import pl.platrykp.cubeformservice.configurations.WebSecurityConfiguration;
+import pl.platrykp.cubeformservice.details.AuthUserDetails;
+import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
+import pl.platrykp.cubeformservice.repositories.RoleRepository;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
+import pl.platrykp.cubeformservice.requests.LoginRequest;
 import pl.platrykp.cubeformservice.requests.RegisterRequest;
+import pl.platrykp.cubeformservice.resources.UserMeResource;
 import pl.platrykp.cubeformservice.responseentities.ErrorResponse;
 import pl.platrykp.cubeformservice.responseentities.HttpCodeResponse;
+import pl.platrykp.cubeformservice.responseentities.LoginSuccessResponse;
+import pl.platrykp.cubeformservice.util.JsonResponse;
+import pl.platrykp.cubeformservice.util.Role;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -25,8 +39,17 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping(WebSecurityConfiguration.REGISTER_PAGE_PATH)
-    public Object Register(
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
+    @PostMapping("/register")
+    public Object register(
             HttpServletResponse response,
             @RequestBody RegisterRequest registerRequest){
 
@@ -42,30 +65,52 @@ public class AuthController {
 
         String hashedPassword = passwordEncoder.encode(registerRequest.password);
 
+        Optional<RoleEntity> role = roleRepository.findById(Role.USER.getId());
+        if(role.isEmpty())
+            return JsonResponse.internalServerError("Something really bad happen");
+
         UserEntity newUserEntity = new UserEntity(
                 registerRequest.username,
                 registerRequest.email,
-                hashedPassword);
+                hashedPassword,
+                role.get());
 
-        userRepository.save(newUserEntity);
+
         logger.info("New user created");
-        return null;
+        return new UserMeResource(userRepository.save(newUserEntity));
     }
 
 
-    @RequestMapping(value = WebSecurityConfiguration.LOGIN_SUCCESS_PAGE_PATH,  method = {RequestMethod.POST, RequestMethod.GET})
-    public HttpCodeResponse loginSuccess(){
-        return new HttpCodeResponse(200, "logged in", "POST", WebSecurityConfiguration.LOGIN_PAGE_PATH);
+    @PostMapping("/login")
+    public Object login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            AuthUserDetails userDetails = (AuthUserDetails) authentication.getPrincipal();
+            String jwt = jwtTokenUtil.generateToken(userDetails);
+
+            return new LoginSuccessResponse(jwt, userDetails.getUsername(), userDetails.getRoleEntity());
+        }catch (Exception er){
+            logger.info("Failed attempt to login: invalid username or password");
+            return JsonResponse.badRequest("invalid username or password");
+        }
     }
 
-    @RequestMapping(value = WebSecurityConfiguration.LOGIN_FAILED_PAGE_PATH, method = {RequestMethod.POST, RequestMethod.GET})
-    public void loginFailed(){
-        throw new AccessDeniedException("Wrong username or password");
-    }
+    @PostMapping("/refreshToken")
+    public Object refreshToken(Authentication authentication){
+        AuthUserDetails userDetails = (AuthUserDetails) authentication.getPrincipal();
+        if(userDetails == null || !authentication.isAuthenticated())
+            return JsonResponse.forbidden("You are not authorized");
 
-    @RequestMapping(value = WebSecurityConfiguration.LOGOUT_DONE_PAGE_PATH, method = {RequestMethod.POST, RequestMethod.GET})
-    public HttpCodeResponse logoutDone(){
-        return new HttpCodeResponse(200, "logout", "POST", WebSecurityConfiguration.LOGOUT_PAGE_PATH);
+        String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return new LoginSuccessResponse(jwt, userDetails.getUsername(), userDetails.getRoleEntity());
     }
 
 }

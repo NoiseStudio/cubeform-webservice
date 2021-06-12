@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public enum Role {
 
     UNAUTHORIZED(0, "unauthorized"),
-    USER(1, "user"), ADMIN(100, "admin");
+    USER(1, "user"), ADMIN(128, "admin");
 
     private static final Logger logger = LoggerFactory.getLogger(Role.class);
 

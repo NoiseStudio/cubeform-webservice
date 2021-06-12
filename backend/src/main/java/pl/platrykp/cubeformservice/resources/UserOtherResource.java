@@ -1,6 +1,7 @@
 package pl.platrykp.cubeformservice.resources;
 
 import net.minidev.json.annotate.JsonIgnore;
+import pl.platrykp.cubeformservice.models.RoleEntity;
 import pl.platrykp.cubeformservice.models.UserEntity;
 
 import java.sql.Timestamp;
@@ -20,5 +21,9 @@ public class UserOtherResource {
 
     public Timestamp getCreationDate() {
         return userEntity.getCreationDate();
+    }
+
+    private RoleEntity getRole() {
+        return userEntity.getRole();
     }
 }

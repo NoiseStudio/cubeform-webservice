@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
 import pl.platrykp.cubeformservice.models.UserEntity;
 import pl.platrykp.cubeformservice.repositories.UserRepository;
 
 import java.util.Optional;
 
+@Service
 public class AuthUserDetailsService implements UserDetailsService {
 
     @Autowired
@@ -23,4 +25,5 @@ public class AuthUserDetailsService implements UserDetailsService {
 
         throw new UsernameNotFoundException("User not found");
     }
+
 }

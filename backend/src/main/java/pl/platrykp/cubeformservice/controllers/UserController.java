@@ -7,6 +7,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.platrykp.cubeformservice.details.AuthUserDetails;
 import pl.platrykp.cubeformservice.models.UserEntity;
@@ -18,19 +19,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users/@me")
+    @GetMapping("/@me")
     public UserMeResource me(Authentication authentication){
-        return new UserMeResource((AuthUserDetails) authentication.getPrincipal());
+        return new UserMeResource(((AuthUserDetails) authentication.getPrincipal()).getUserEntity());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public UserOtherResource getUser(@PathVariable UUID id){
         Optional<UserEntity> user = userRepository.findById(id);
         if(user.isPresent())
