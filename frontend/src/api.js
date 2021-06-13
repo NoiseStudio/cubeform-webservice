@@ -56,20 +56,21 @@ export class ApiManager {
         let promise = fetch(this._host + apiPath, {
             method: method,
             headers: this._headers,
-            body: body,
-            mode: "no-cors"
+            body: (typeof(body) === "object") ? JSON.stringify(body) : undefined,
+            mode: "cors"
         })
-        .then(response =>
-            response.json()
-            .then(json => {
-                response.body = json;
-                return response;
-            })
-        );
+        .then(response => {
+            return response.json()
+                .then(json => {
+                    // force override response.body
+                    response.jsonBody = json;
+                    return response;
+                });
+        });
 
         if(this._debugInfo === true){
             promise.then(response => {
-                console.log(response);
+                console.log("", response);
                 return response;
             });
         }

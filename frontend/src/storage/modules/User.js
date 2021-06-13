@@ -1,8 +1,39 @@
-const state = () => ({
-   isLogged: false,
-   token: null,
-   id: null,
-});
+const lsKey = "__vuex_user";
+
+const save = (obj) => {
+    localStorage.setItem(lsKey, JSON.stringify(obj));
+}
+const load = (oldState) => {
+    let dataStr = localStorage.getItem(lsKey);
+    let data;
+    try {
+        data = JSON.parse(dataStr) || null;
+    }
+    catch (err){
+        data = null;
+    }
+
+    if(data === null){
+        console.log("no User state in local storage");
+        return;
+    }
+
+    oldState.isLogged = data.isLogged || false;
+    oldState.token = data.token || null;
+    oldState.id = data.id || null;
+
+    console.log("Local storage User state loaded");
+}
+
+const state = () => {
+    let stateObj = {
+        isLogged: false,
+        token: null,
+        id: null
+    }
+    load(stateObj);
+    return stateObj;
+};
 
 // getter(state, getters, rootState)
 const getters = {
@@ -31,12 +62,15 @@ const getters = {
 const mutations = {
     setUserId(state, newId) {
         state.id = newId;
+        save(state);
     },
     setUserToken(state, newToken) {
         state.token = newToken;
+        save(state);
     },
     setUserLogged(state, isLogged) {
         state.isLogged = isLogged;
+        save(state);
     }
 }
 

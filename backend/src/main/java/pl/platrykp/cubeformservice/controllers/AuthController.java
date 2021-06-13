@@ -96,7 +96,7 @@ public class AuthController {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             String jwt = jwtTokenUtil.generateToken(userDetails);
 
-            return new LoginSuccessResponse(jwt, userDetails.getUsername(), userDetails.getRoleEntity());
+            return new LoginSuccessResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getRoleEntity());
         }catch (Exception er){
             logger.info("Failed attempt to login: invalid username or password");
             return JsonResponse.badRequest("invalid username or password");
@@ -111,7 +111,7 @@ public class AuthController {
 
         String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return new LoginSuccessResponse(jwt, userDetails.getUsername(), userDetails.getRoleEntity());
+        return new LoginSuccessResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getRoleEntity());
     }
 
 }
