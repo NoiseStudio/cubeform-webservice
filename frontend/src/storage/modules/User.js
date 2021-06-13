@@ -46,7 +46,7 @@ const actions = {
         commit('setUserToken', null);
         commit('setUserLogged', false);
     },
-    login({ commit }, id, token) {
+    login({ commit }, {id, token}) {
         commit('setUserId', id);
         commit('setUserToken', token);
         commit('setUserLogged', true);
