@@ -69,7 +69,7 @@ export default {
   grid-column: 1 / 2;
   background-color: @theme-primary-dark;
   color: @theme-primary-foreground;
-  max-width: @menu-min-width;
+  //max-width: @menu-min-width;
 
   .app-menu-item {
     width: 80%;
