@@ -10,11 +10,13 @@ export class ApiManager {
     _host;
     _debugInfo = false;
     _headers = {}
+    _autoLogout;
 
-    constructor(host, debugInfo = false) {
+    constructor(host, debugInfo = false, autoLogout = true) {
         this._debugInfo = debugInfo;
         this._headers = Object.assign({}, staticHeaders);
         this._host = host;
+        this._autoLogout = autoLogout;
         if(this._host.endsWith("/"))
             this._host = this._host.substr(0, this._host.length - 1);
 
@@ -30,6 +32,14 @@ export class ApiManager {
                 console.log("+++", mutation.payload);
             }
         });
+    }
+
+    set autoLogout(autoLogout){
+        this._autoLogout = autoLogout;
+    }
+
+    get autoLogout(){
+        return this._autoLogout;
     }
 
     set debugInfo(debugInfo) {
@@ -66,9 +76,12 @@ export class ApiManager {
             mode: "cors"
         })
         .then(response => {
+            if(this._autoLogout && response.status === 401) {
+                Store.dispatch("User/logout");
+            }
+
             return response.json()
                 .then(json => {
-                    // force override response.body
                     response.jsonBody = json;
                     return response;
                 });

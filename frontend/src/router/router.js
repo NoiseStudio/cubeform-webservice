@@ -11,6 +11,17 @@ const Router = new VueRouter({
     routes: routes
 });
 
+Store.subscribe((mutation) => {
+    if(mutation.type === "User/setUserLogged") {
+        if(mutation.payload !== true){
+            console.log("User logged out");
+            let routeMeta = Router.currentRoute.meta;
+            if(!routeMeta.allowWithoutLogin || !routeMeta.blockLogged)
+                Router.push("/login");
+        }
+    }
+});
+
 Router.beforeEach((to, from, next)=> {
     if(Store.state.User.isLogged){
         if(to.matched.some(record => record.meta.blockLogged)){

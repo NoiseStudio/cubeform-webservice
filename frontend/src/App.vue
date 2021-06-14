@@ -9,17 +9,14 @@
       <img class="app-menu-item" src="@/assets/cubeform-logo-vertical.svg" alt="logo">
 
       <MenuList class="app-menu-item" icon="mdi-account" title="Profile">
-        <IconButton icon="mdi-palette-swatch" text="Skin customization" />
-        <IconButton icon="mdi-laptop" text="Server profiles" />
-        <IconButton icon="mdi-server" text="My servers" />
-        <IconButton icon="mdi-account-cog" text="Account settings" />
+        <IconButtonLink to="/registerServer" icon="mdi-laptop" text="Register server" />
+        <IconButtonLink to="/" icon="mdi-server" text="My servers" />
       </MenuList>
 
       <MenuList class="app-menu-item" icon="mdi-controller-classic" title="Game">
-        <IconButton icon="mdi-new-box" text="News" />
-        <IconButton icon="mdi-text-box" text="Last update" />
-        <IconButton icon="mdi-server-network" text="Server list" />
-        <IconButton icon="mdi-star" text="Buy premium" />
+        <IconButtonLink to="/news" icon="mdi-new-box" text="News" />
+        <IconButtonLink to="/servers" icon="mdi-server-network" text="Server list" />
+        <IconButtonLink to="/logout" icon="mdi-star" text="Logout" />
       </MenuList>
 
     </ElHeader>
@@ -30,10 +27,10 @@
 
 <script>
 import MenuList from "@/components/MenuList";
-import IconButton from "@/components/Elements/Components/IconButton";
+import IconButtonLink from "./components/Elements/Components/IconButtonLink";
 export default {
   name: 'App',
-  components: {IconButton, MenuList},
+  components: {IconButtonLink, MenuList},
   data: () => ({
     menuVisible: false
   }),
@@ -48,6 +45,9 @@ export default {
     },
     goBack(){
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/')
+    },
+    isLogged(){
+      return this.$store.state.User.isLogged;
     }
   },
 }

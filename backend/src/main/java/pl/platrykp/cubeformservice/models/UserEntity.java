@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -40,6 +41,10 @@ public class UserEntity {
     @Column
     @Getter @Setter
     private Timestamp creationDate;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @Getter @Setter
+    private Set<ServerEntity> servers;
 
     public UserEntity(){}
 

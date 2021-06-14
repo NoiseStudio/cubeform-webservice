@@ -35,10 +35,14 @@ export default {
     addNews(title, timestamp, content) {
       let newElem = new (Vue.extend(News));
       newElem.$props.title = title;
-      newElem.$props.date = new Date(timestamp).toUTCString().split("T")[0];
+      newElem.$props.date = this.makeDateFancy(new Date(timestamp));
       newElem.$props.content = content;
       newElem.$mount();
       this.$refs.newsContainer.appendChild(newElem.$el);
+    },
+    makeDateFancy(date){
+      let strDate = date.toISOString().replace("T", " ");
+      return /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.exec(strDate)[0];
     },
     showError(){
       this.$refs.newsContainer.innerText = "Cannot load news ;(";
