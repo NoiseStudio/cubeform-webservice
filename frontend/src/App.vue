@@ -10,7 +10,7 @@
 
       <MenuList class="app-menu-item" icon="mdi-account" title="Profile">
         <IconButtonLink to="/registerServer" icon="mdi-laptop" text="Register server" />
-        <IconButtonLink to="/" icon="mdi-server" text="My servers" />
+        <IconButtonLink to="/myServers" icon="mdi-server" text="My servers" />
       </MenuList>
 
       <MenuList class="app-menu-item" icon="mdi-controller-classic" title="Game">

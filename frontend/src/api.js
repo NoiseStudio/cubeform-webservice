@@ -137,6 +137,26 @@ export class ApiManager {
         return this.get("/api/news");
     }
 
+    getOnlineServers() {
+        return this.get("/api/servers/online");
+    }
+
+    getMyServers() {
+        return this.get("/api/servers/my");
+    }
+
+    renewToken(id) {
+        return this.put(`/api/servers/${id}/token`)
+    }
+
+    registerServer(name, gameMode, mods){
+        return this.post("/api/servers/register", {
+            name: name,
+            gameMode: gameMode,
+            mods: mods
+        });
+    }
+
 }
 
 export const api = new ApiManager("http://localhost:8080/");

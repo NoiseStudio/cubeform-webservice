@@ -5,6 +5,7 @@ import NewsPage from "@/components/NewsPage"
 import LoginPage from "@/components/LoginPage";
 import RegisterPage from "@/components/RegisterPage";
 import Logout from "@/components/Logout";
+import MyServers from "../components/MyServers";
 
 export default [
     {
@@ -46,5 +47,9 @@ export default [
     {
         path: "/news",
         component: NewsPage
-    }
+    },
+    {
+        path: "/myServers",
+        component: MyServers
+    },
 ];

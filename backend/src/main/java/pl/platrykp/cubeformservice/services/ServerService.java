@@ -76,12 +76,10 @@ public class ServerService {
 
     @Scheduled(fixedRate = CHECK_SERVER_FIXED_RATE)
     public void processListCheck(){
-        logger.info("Yee boy");
         servers.forEach((uuid, serverResource) -> {
             final OnlineServerResource server = serverResource;
             CompletableFuture.runAsync(()->{
                 if(updateServerStatus(server)){
-
                     logger.info("Server {} is still active", server.getId());
                     return;
                 }
@@ -106,7 +104,6 @@ public class ServerService {
         */
         long startCommunicationTime = System.currentTimeMillis();
         try(Socket socket = new Socket(server.getAddress(), server.getPort())){
-            logger.info("Checking status for {}", server.getId());
             socket.getOutputStream().write(SERVER_ALIVE_TEST_PACKAGE);
             byte[] msg = new byte[1 + 4 + 4];
             InputStream is = socket.getInputStream();

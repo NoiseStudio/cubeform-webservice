@@ -4,33 +4,42 @@
     <div>{{gameMode}}</div>
     <div v-if="mods" class="textGreen">Yes</div>
     <div v-else class="textRed">No</div>
-    <div
-    v-bind:class="{
-    textGreen: (this.playersCount/this.maxPlayersCount*100)<60,
-    textYellow: (this.playersCount/this.maxPlayersCount*100)>=60,
-    textRed: (this.playersCount/this.maxPlayersCount*100)>=90}"
-    >{{playersCount}} / {{maxPlayersCount}}</div>
-    <div v-bind:class="{textGreen: ping<50, textYellow: (ping>=50&&ping<100), textRed: ping>=100}">{{ping}}</div>
-    <div class="tooltip">{{address}}:{{port}}</div>
+    <div class="regenerateToken" @click="renewToken"><span class="mdi mdi-autorenew"></span></div>
+    <div class="tooltip">{{token}}</div>
   </div>
 </template>
 
 <script>
+import {api} from "../../../api";
+
 export default {
   name: "Server",
   props: {
     serverName: String,
     gameMode: String,
     mods: Boolean,
-    playersCount: Number,
-    maxPlayersCount: Number,
-    ping: Number,
-    address: String,
-    port: Number
+    token: String,
+    id: String
   },
   data() {
     return {
       activeColor: "white"
+    }
+  },
+  methods: {
+    renewToken(){
+      api.renewToken(this.id)
+          .then(response => this.processResponse(response))
+          .catch(()=>this.showError());
+    },
+    processResponse(response){
+      if(response.status === 200)
+        this.token = response.jsonBody.token;
+      else
+        this.showError();
+    },
+    showError(){
+      alert("Cant renew token");
     }
   }
 }
@@ -47,7 +56,7 @@ export default {
 
   background-color: rgba(0, 0, 0, 0);
   display: grid;
-  grid-template-columns: @server-list-grid-template-columns;
+  grid-template-columns: @my-server-list-grid-template-columns;
 
   &>div{
     text-align: center;
@@ -80,8 +89,8 @@ export default {
     position: absolute;
     top: -0.2em;
     bottom: -0.2em;
-    left: 47%;
-    right: 0;
+    left: 0;
+    right: 2em;
   }
   &:hover {
     .tooltip {

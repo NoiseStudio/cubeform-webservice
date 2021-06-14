@@ -2,19 +2,7 @@
   <div class="main-container">
     <div class="main-header">
       <div class="title">
-          Server list
-      </div>
-      <div class="header-data-container">
-        <div class="header-data">
-          <div class="loremipsum">
-            loremipsum dolor
-          </div>
-          <div class="numbers-container">
-            Servers: {{this.servers}}
-            <br>
-            Players: {{this.players}}
-          </div>
-        </div>
+          Your server list
       </div>
     </div>
 
@@ -23,8 +11,6 @@
             <div class="single-property">Server name</div>
             <div class="single-property">Game mode</div>
             <div class="single-property">Mods</div>
-            <div class="single-property">Players</div>
-            <div class="single-property">Ping</div>
         </div>
 
         <div class="content-data" ref="serverList">
@@ -35,17 +21,15 @@
 </template>
 
 <script>
-import Server from "@/components/Elements/Components/Server";
+import MyServer from "./Elements/Components/MyServer";
 import Vue from "vue";
 import {api} from "../api";
 
 export default {
-  name: "Servers",
+  name: "MyServers",
   components: {},
   data() {
     return {
-      servers: 21,
-      players: 37
     }
   },
   mounted() {
@@ -53,7 +37,8 @@ export default {
   },
   methods: {
     loadServers(){
-      api.getOnlineServers()
+      console.log("wtf");
+      api.getMyServers()
           .then(response => this.processResponse(response))
           .catch(()=>this.showError());
     },
@@ -64,30 +49,18 @@ export default {
         this.showError()
     },
     loadServersFromJson(json){
-      let players = 0;
-      let servers = 0;
       for(let serverEntity of json.servers) {
-        this.addServer(serverEntity.name, serverEntity.gameMode, serverEntity.mods,
-            serverEntity.currentPlayers, serverEntity.maxPlayers, serverEntity.ping,
-            serverEntity.address, serverEntity.port );
-
-        players += serverEntity.currentPlayers;
-        servers++;
+        this.addServer(serverEntity.id, serverEntity.name, serverEntity.gameMode,
+            serverEntity.mods, serverEntity.token);
       }
-      this.players = players;
-      this.servers = servers;
     },
-
-    addServer(name, gameMode, mods, players, maxPlayers, ping, address, port){
-      let newElem = new (Vue.extend(Server));
+    addServer(id, name, gameMode, mods, token){
+      let newElem = new (Vue.extend(MyServer));
+      newElem.$props.id = id;
       newElem.$props.serverName = name;
       newElem.$props.gameMode = gameMode;
       newElem.$props.mods = mods;
-      newElem.$props.playersCount = players;
-      newElem.$props.maxPlayersCount = maxPlayers;
-      newElem.$props.ping = ping;
-      newElem.$props.address = address;
-      newElem.$props.port = port;
+      newElem.$props.token = token;
 
       newElem.$mount();
       this.$refs.serverList.appendChild(newElem.$el);
@@ -167,7 +140,7 @@ export default {
         border-radius: 25px;
         display: grid;
         align-content: center;
-        grid-template-columns: @server-list-grid-template-columns;
+        grid-template-columns: @my-server-list-grid-template-columns;
         white-space: nowrap;
 
 

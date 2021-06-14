@@ -7,43 +7,63 @@
       <ValidationProvider name="name" rules="required|min:5" v-slot="{errors}" class="singleField">
         <div class="nameInput">
           <label class="formLabel">Server name</label>
-          <input class="formInput" v-model="server.name">
+          <input class="formInput" v-model="serverName">
         </div>
         <span class="errorSpan">{{errors[0]}}</span>
       </ValidationProvider>
-      <ValidationProvider name="gameMode" rules="required|min:5" v-slot="{errors}" class="singleField">
+      <ValidationProvider name="gameMode" rules="required|min:3|max:10" v-slot="{errors}" class="singleField">
         <div class="nameInput">
           <label class="formLabel">Game mode</label>
-          <input class="formInput" v-model="server.mode">
+          <input class="formInput" v-model="serverGameMode">
         </div>
         <span class="errorSpan">{{errors[0]}}</span>
       </ValidationProvider>
       <ValidationProvider name="mods" class="singleField">
         <div class="nameInput">
           <label class="formLabel">Mods</label>
-          <input class="formInput checkBox" v-model="server.maxPlayers" type="checkbox">
+          <input class="formInput checkBox" v-model="serverMods" type="checkbox">
         </div>
       </ValidationProvider>
       <div class="buttonContainer">
         <button :disabled="invalid" class="submitButton">submit</button>
       </div>
+      <div>{{responseInfo}}</div>
     </ValidationObserver>
   </div>
 </template>
 
 <script>
-import Server from "@/models/Server";
+import {api} from "../api";
 
 export default {
   name: "ServerRegistrationForm",
   methods: {
     handleServerRegistration(){
-      console.log("server registered!")
+      api.registerServer(this.serverName, this.serverGameMode, this.serverMods)
+      .then(response => {
+        this.processResponse(response);
+      })
+      .catch(()=>this.showError())
+    },
+    processResponse(response){
+      if(response.status === 200)
+        this.processJson(response.jsonBody);
+      else
+        this.showError()
+    },
+    processJson(json){
+      this.responseInfo = `Server '${json.name}' registered!`;
+    },
+    showError() {
+      this.responseInfo = "Register server error"
     }
   },
   data(){
     return {
-      server: new Server('','',false,0)
+      serverName: "",
+      serverGameMode: "",
+      serverMods: false,
+      responseInfo: ""
     }
   }
 }
