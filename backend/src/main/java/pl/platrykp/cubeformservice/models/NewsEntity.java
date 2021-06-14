@@ -26,7 +26,7 @@ public class NewsEntity {
     @Getter @Setter
     private String title;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     @Getter @Setter
     private String content;
 

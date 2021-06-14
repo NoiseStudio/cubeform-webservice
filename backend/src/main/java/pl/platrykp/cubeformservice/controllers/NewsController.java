@@ -32,7 +32,7 @@ public class NewsController {
         throw new ResourceNotFoundException();
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public MultipleNewsResource getNews() {
         List<NewsEntity> newsEntities = newsRepository.findTop10ByOrderByDate();
 
@@ -40,13 +40,12 @@ public class NewsController {
     }
 
 
-    @PostMapping("/")
+    @PostMapping("")
     @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<?> newNews(@RequestBody NewNewsRequest newsRequest){
+    public Object newNews(@RequestBody NewNewsRequest newsRequest){
         NewsEntity newNewsEntityEntity = newsRequest.newsEntity();
 
-        newsRepository.save(newNewsEntityEntity);
-        return ResponseEntity.ok("");
+        return newsRepository.save(newNewsEntityEntity);
     }
 
 }

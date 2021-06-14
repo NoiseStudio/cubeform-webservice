@@ -18,11 +18,17 @@ export class ApiManager {
         if(this._host.endsWith("/"))
             this._host = this._host.substr(0, this._host.length - 1);
 
-        this._headers['Authorization'] = undefined;
+        if(Store.state.User.isLogged)
+            this._headers['Authorization'] = `${tokenType} ${Store.state.User.token}`;
+        else
+            this._headers['Authorization'] = undefined;
+
         console.log(tokenType);
         Store.subscribe((mutation) => {
-            if(mutation.type === "User/setUserToken")
+            if(mutation.type === "User/setUserToken") {
                 this._headers['Authorization'] = `${tokenType} ${mutation.payload}`;
+                console.log("+++", mutation.payload);
+            }
         });
     }
 
@@ -112,6 +118,10 @@ export class ApiManager {
 
     getMe() {
         return this.get("/api/users/@me");
+    }
+
+    getNews() {
+        return this.get("/api/news");
     }
 
 }

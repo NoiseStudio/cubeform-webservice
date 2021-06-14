@@ -4,8 +4,8 @@
       <span class="title">{{title}}</span>
       <div class="rightSide">
         <span class="date">{{date}}</span>
-        <span v-if="visibility === true" class="mdi-arrow-up-bold-box-outline mdi" @click="changeContentVisibility"></span>
-        <span v-else class="mdi-arrow-down-bold-box-outline mdi" @click="changeContentVisibility"></span>
+        <span v-if="visibility === true" class="mdi-arrow-up-bold-box-outline mdi expand-bt" @click="changeContentVisibility"></span>
+        <span v-else class="mdi-arrow-down-bold-box-outline mdi expand-bt" @click="changeContentVisibility"></span>
       </div>
     </div>
     <div v-if="visibility === true" class="newsData">
@@ -77,6 +77,10 @@ export default {
     padding-left: 15px;
     white-space: normal;
 
+  }
+  .expand-bt {
+    cursor: pointer;
+    user-select: none;
   }
 }
 
