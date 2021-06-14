@@ -26,7 +26,7 @@ public enum Role {
     public static Role fromId(int id){
         switch (id) {
             case 1: return USER;
-            case 2: return ADMIN;
+            case 128: return ADMIN;
             default:
                 String stack = Arrays.stream(Thread.currentThread().getStackTrace())
                         .map(StackTraceElement::toString)

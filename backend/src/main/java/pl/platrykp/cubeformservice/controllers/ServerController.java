@@ -14,10 +14,12 @@ import pl.platrykp.cubeformservice.models.ServerAccessTokenEntity;
 import pl.platrykp.cubeformservice.models.ServerEntity;
 import pl.platrykp.cubeformservice.repositories.ServerAccessTokenRepository;
 import pl.platrykp.cubeformservice.repositories.ServerRepository;
+import pl.platrykp.cubeformservice.requests.LoginServerRequest;
 import pl.platrykp.cubeformservice.requests.RegisterServerRequest;
 import pl.platrykp.cubeformservice.resources.MultipleOfflineServerResource;
 import pl.platrykp.cubeformservice.resources.MultipleOnlineServerResource;
 import pl.platrykp.cubeformservice.resources.OfflineServerResource;
+import pl.platrykp.cubeformservice.resources.OnlineServerResource;
 import pl.platrykp.cubeformservice.services.ServerService;
 import pl.platrykp.cubeformservice.util.JsonResponse;
 
@@ -55,6 +57,32 @@ public class ServerController {
 //    public Object getAllServers() {
 //        return mapToMultipleOfflineServerResources(serverRepository.findAll());
 //    }
+
+    @PostMapping("/online")
+    public Object loginServer(@RequestBody LoginServerRequest loginServerRequest){
+
+        Optional<ServerEntity> serverEntityOptional = serverRepository
+                .findByAccessToken_AccessToken(loginServerRequest.getAccessToken());
+
+        if(serverEntityOptional.isEmpty())
+            return JsonResponse.badRequest("wrong access token");
+
+        ServerEntity serverEntity = serverEntityOptional.get();
+
+        OnlineServerResource onlineServerResource = new OnlineServerResource(
+                serverEntity.getId(),
+                loginServerRequest.getAccessToken(),
+                loginServerRequest.getAddress(),
+                loginServerRequest.getPort(),
+                serverEntity.getName(),
+                serverEntity.getGameMode(),
+                serverEntity.isMods(),
+                serverEntity.getOwner()
+        );
+
+        serverService.setServer(onlineServerResource);
+        return JsonResponse.ok("Ok");
+    }
 
     @GetMapping("/my")
     public Object getMyServers(Authentication auth) {
