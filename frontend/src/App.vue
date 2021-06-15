@@ -16,7 +16,8 @@
       <MenuList class="app-menu-item" icon="mdi-controller-classic" title="Game">
         <IconButtonLink to="/news" icon="mdi-new-box" text="News" />
         <IconButtonLink to="/servers" icon="mdi-server-network" text="Server list" />
-        <IconButtonLink to="/logout" icon="mdi-star" text="Logout" />
+        <IconButtonLink to="/logout" icon="mdi-account" :text="isLogged()?'Logout':'Login'" />
+        <IconButtonLink v-if="!isLogged()" to="/registration" icon="mdi-account-plus" text="Register" />
       </MenuList>
 
     </ElHeader>
